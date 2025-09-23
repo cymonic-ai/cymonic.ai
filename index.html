@@ -3,7 +3,392 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cymonic.ai - Architecting Intelligence</title>
+    <title><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cymonic.ai - Enterprise AI & Cloud-Native Development | cymonic.ai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0e1a; /* A very dark navy blue */
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .hero-bg {
+            position: relative;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            overflow: hidden;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .content-overlay {
+            position: relative;
+            z-index: 2;
+        }
+
+        .site-header {
+            background-color: rgba(10, 14, 26, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .site-header.scrolled {
+            background-color: rgba(10, 14, 26, 0.85);
+        }
+
+        .logo-link .dot {
+            animation: pulse-dot 2.5s infinite ease-in-out;
+            display: inline-block; /* Required for transform */
+        }
+        
+        .logo-link .mascot {
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .logo-link:hover .mascot {
+            transform: rotate(180deg);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #22d3ee;
+            transition: width 0.3s ease-in-out;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        
+        /* Microanimations */
+        .cta-button {
+            transition: all 0.3s ease-in-out;
+        }
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
+        }
+
+        .pillar-card {
+            background: rgba(16, 24, 40, 0.7);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-8px);
+            background: rgba(16, 24, 40, 1);
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse-dot {
+            0%, 100% {
+                transform: scale(1);
+                text-shadow: 0 0 5px rgba(34, 211, 238, 0.7);
+            }
+            50% {
+                transform: scale(1.3);
+                text-shadow: 0 0 20px rgba(34, 211, 238, 1);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fade-in-up 0.8s ease-out forwards;
+        }
+        
+        /* Staggered animations */
+        .section-title, .section-subtitle, .pillar-card, .contact-text {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <header class="site-header fixed top-0 left-0 w-full z-50 py-4 px-6 lg:px-8">
+        <div class="flex justify-between items-center">
+            <a href="#" class="logo-link text-2xl font-bold font-orbitron text-white hover:text-cyan-400 transition-colors flex items-center gap-3">
+                <svg class="mascot" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 11V12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span>cymonic<span class="text-cyan-400 dot">.</span>ai</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#capabilities" class="nav-link text-gray-300 hover:text-white transition-colors">Capabilities</a>
+                <a href="#contact" class="nav-link text-gray-300 hover:text-white transition-colors">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero-bg min-h-screen flex items-center justify-center text-center p-6">
+        <canvas id="hero-canvas"></canvas>
+        <div class="content-overlay">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-5xl md:text-7xl font-bold font-orbitron text-white mb-4 animate-fade-in-up">
+                    Architecting Intelligence.
+                    <br class="hidden md:block">
+                    <span class="text-cyan-400">Engineering Reality.</span>
+                </h1>
+                <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-8 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    With a foundation of decades in enterprise engineering, we don't just envision the future—we build it. We are the bridge between ambition and executed reality.
+                </p>
+                <a href="#contact" class="cta-button inline-block bg-cyan-500 text-gray-900 font-bold py-3 px-8 rounded-lg text-lg hover:bg-cyan-400" style="animation-delay: 0.4s;">
+                    Discuss Your Challenge
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <!-- Pillars/Capabilities Section -->
+        <section id="capabilities" class="py-20 md:py-32 bg-gray-900/50">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+                <h2 class="section-title text-4xl md:text-5xl font-bold font-orbitron text-white mb-4">Core Capabilities</h2>
+                <p class="section-subtitle max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-16">We transform ambitious ideas into intelligent, scalable realities across the full technology spectrum.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Pillar 1: AI First App Innovation -->
+                    <div class="pillar-card rounded-xl p-8 text-left">
+                        <div class="mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M12 8V4H8"/><rect x="4" y="8" width="8" height="12" rx="2"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M17 12h-2"/><path d="M16 4.5a4 4 0 1 1-8 0"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">AI-First App Innovation</h3>
+                        <p class="text-gray-400">We don't just add AI; we build from the ground up with intelligence at the core. We architect applications where smart algorithms drive fundamental user value and create unparalleled competitive advantages.</p>
+                    </div>
+
+                    <!-- Pillar 2: Cloud Transformation -->
+                    <div class="pillar-card rounded-xl p-8 text-left">
+                        <div class="mb-4">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Cloud Transformation</h3>
+                        <p class="text-gray-400">Beyond migration, we engineer true cloud-native ecosystems. We design for resilience, scalability, and cost-efficiency, leveraging the full power of serverless, containers, and infrastructure-as-code.</p>
+                    </div>
+
+                    <!-- Pillar 3: Data Engineering -->
+                    <div class="pillar-card rounded-xl p-8 text-left">
+                        <div class="mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Data Engineering</h3>
+                        <p class="text-gray-400">We architect and build high-throughput data pipelines that are not just robust, but intelligent. From real-time streaming to complex ETL, we turn raw data into a strategic asset ready for advanced analytics and AI.</p>
+                    </div>
+
+                    <!-- Pillar 4: GenAI -->
+                    <div class="pillar-card rounded-xl p-8 text-left">
+                        <div class="mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M12 2L12 22"/><path d="M22 12L2 12"/><path d="M18.36 18.36L5.64 5.64"/><path d="M18.36 5.64L5.64 18.36"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Generative AI</h3>
+                        <p class="text-gray-400">We harness the power of Large Language Models and diffusion techniques to build systems that create, reason, and augment human capability, moving beyond simple automation to genuine digital collaboration.</p>
+                    </div>
+
+                    <!-- Pillar 5: UX/Product Design -->
+                    <div class="pillar-card rounded-xl p-8 text-left">
+                        <div class="mb-4">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">UX/Product Design</h3>
+                        <p class="text-gray-400">We design experiences for tomorrow's user. Our process fuses data-driven insights with intuitive design principles to create products that are not only powerful but also elegant, accessible, and a pleasure to use.</p>
+                    </div>
+
+                    <!-- Pillar 6: IoT & Edge Computing -->
+                    <div class="pillar-card rounded-xl p-8 text-left">
+                         <div class="mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M2 12h2"/><path d="M20 12h2"/><path d="M5 7.5 2 6"/><path d="m19 7.5 3-1.5"/><path d="M5 16.5 2 18"/><path d="m19 16.5 3 1.5"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m7.5 5-1.5-3"/><path d="m16.5 5 1.5-3"/><path d="m7.5 19-1.5 3"/><path d="m16.5 19 1.5 3"/><circle cx="12" cy="12" r="4"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">IoT & Edge Computing</h3>
+                        <p class="text-gray-400">We extend intelligence to the physical world. We build resilient IoT networks and deploy powerful AI models at the edge, enabling autonomous decision-making and real-time insights where they matter most.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 md:py-32 bg-gray-900/50">
+            <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+                 <h2 class="section-title text-4xl md:text-5xl font-bold font-orbitron text-white mb-4">Let's Build Together</h2>
+                <p class="contact-text section-subtitle max-w-2xl mx-auto text-lg md:text-xl text-gray-300 mb-16">Complex challenges demand more than solutions—they require architectural foresight. Connect directly with the minds engineering tomorrow's systems and let's map out your next technological leap.</p>
+
+                <div class="group">
+                     <a href="mailto:contact@cymonic.ai" class="inline-block text-3xl md:text-4xl font-bold text-white hover:text-cyan-300 transition-colors duration-300 ease-in-out">
+                        contact@cymonic.ai
+                    </a>
+                    <div class="mt-3 h-0.5 w-1/4 mx-auto bg-gray-700 group-hover:bg-cyan-400 group-hover:w-1/2 transition-all duration-500 ease-in-out"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 py-6">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center text-gray-500">
+            <p>&copy; 2025 cymonic.ai - All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Animated background script
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let canvasWidth = canvas.width = window.innerWidth;
+        let canvasHeight = canvas.height = window.innerHeight;
+        const mouse = { x: undefined, y: undefined };
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+        
+        window.addEventListener('mouseout', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        function Particle(x, y) {
+            this.x = x || Math.random() * canvasWidth;
+            this.y = y || Math.random() * canvasHeight;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.radius = Math.random() * 1.5 + 0.5;
+        }
+
+        function createParticles() {
+            particles = [];
+            let particleCount = Math.floor(canvasWidth * canvasHeight / 15000);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.fill();
+                
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > canvasWidth) p.vx *= -1;
+                if (p.y < 0 || p.y > canvasHeight) p.vy *= -1;
+            });
+
+            drawLines();
+            requestAnimationFrame(draw);
+        }
+
+        function drawLines() {
+            const connectRadius = 120;
+            const mouseRadius = 150;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    let p1 = particles[i];
+                    let p2 = particles[j];
+                    let dist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+
+                    if (dist < connectRadius) {
+                        let opacity = 1 - dist / connectRadius;
+
+                        // Spotlight effect
+                        if (mouse.x && mouse.y) {
+                            let distToMouse = Math.sqrt(Math.pow((p1.x + p2.x) / 2 - mouse.x, 2) + Math.pow((p1.y + p2.y) / 2 - mouse.y, 2));
+                            if (distToMouse < mouseRadius) {
+                                opacity += (1 - distToMouse / mouseRadius) * 0.7;
+                            }
+                        }
+
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${opacity > 1 ? 1 : opacity})`;
+                        ctx.lineWidth = 0.7;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            canvasWidth = canvas.width = window.innerWidth;
+            canvasHeight = canvas.height = window.innerHeight;
+            createParticles();
+        });
+
+        createParticles();
+        draw();
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = `fade-in-up 0.8s ease-out forwards`;
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section-title, .section-subtitle, .pillar-card, .contact-text').forEach((el, index) => {
+            el.style.animationDelay = `${index * 0.1}s`;
+            observer.observe(el);
+        });
+        
+        // Header scroll effect
+        const header = document.querySelector('.site-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+    </script>
+</body>
+</html>
+
+</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
