@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO & Metadata -->
     <title>cymonic.ai | Enterprise AI & Cloud-Native Architecture</title>
@@ -24,15 +24,8 @@
                         orbitron: ['Orbitron', 'sans-serif'],
                     },
                     colors: {
-                        cyan: {
-                            400: '#22d3ee',
-                            500: '#06b6d4',
-                            900: '#164e63',
-                        },
-                        slate: {
-                            850: '#1e293b',
-                            900: '#0f172a',
-                        }
+                        cyan: { 400: '#22d3ee', 500: '#06b6d4', 900: '#164e63' },
+                        slate: { 850: '#1e293b', 900: '#0f172a' }
                     }
                 }
             }
@@ -40,27 +33,19 @@
     </script>
 
     <style>
-        /* Core Styles */
-        html {
-            scroll-padding-top: 90px;
-            background-color: #0a0e1a;
-        }
-
+        /* --- Critical Rendering Styles --- */
+        html { scroll-padding-top: 90px; background-color: #0a0e1a; }
+        
         .hero-bg {
             position: relative;
             background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
             overflow: hidden;
         }
         
-        canvas {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
-        }
-        
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .content-overlay { position: relative; z-index: 2; }
 
-        /* Header */
+        /* Header Glassmorphism */
         .site-header {
             background-color: rgba(10, 14, 26, 0.95);
             backdrop-filter: blur(10px);
@@ -72,13 +57,14 @@
             border-bottom: 1px solid rgba(34, 211, 238, 0.3);
         }
 
-        /* Periodic Grid */
+        /* Grid Systems */
         .periodic-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 1rem;
         }
 
+        /* Card Styles */
         .element-card {
             background: rgba(30, 41, 59, 0.6);
             border: 1px solid rgba(34, 211, 238, 0.2);
@@ -88,543 +74,160 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth flip speed */
             cursor: pointer;
-            overflow: hidden;
+            overflow: visible; /* Changed from hidden to allow 3D projection */
+            transform-style: preserve-3d; /* REQUIRED for 3D flip */
         }
 
-        /* -- PATHWAY / CONNECTION STATES -- */
-        
-        /* Dimmed State (Inactive) */
-        .op-module.dimmed,
-        .element-card.dimmed {
-            opacity: 0.15;
-            filter: grayscale(100%) blur(1px);
-            transform: scale(0.95);
+        /* Interaction States */
+        .op-module.dimmed, .element-card.dimmed {
+            opacity: 0.15; filter: grayscale(100%) blur(1px); transform: scale(0.95);
         }
 
-        /* Active/Hover State */
-        .op-module.path-active,
-        .element-card.path-active,
-        .element-card:hover {
+        .op-module.path-active, .element-card.path-active, .element-card:hover {
             background: rgba(30, 41, 59, 0.95);
             border-color: #22d3ee;
             box-shadow: 0 0 25px rgba(34, 211, 238, 0.25);
             transform: translateY(-5px) scale(1.02);
-            z-index: 10;
-            opacity: 1;
-            filter: none;
-        }
-        
-        /* Strategy & Blueprint Highlight specific colors */
-        .strategy-card.path-active {
-            border-color: #f97316; /* Orange for Strategy */
-            box-shadow: 0 0 25px rgba(249, 115, 22, 0.3);
-        }
-        
-        .blueprint-card.path-active {
-            border-color: #3b82f6; /* Blue for Blueprint */
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
-            background: rgba(59, 130, 246, 0.1);
-        }
-        
-        /* Connection Line (Vertical Beam) */
-        .connection-beam {
-            position: absolute;
-            width: 2px;
-            background: linear-gradient(to bottom, transparent, #22d3ee, transparent);
-            left: 50%;
-            transform: translateX(-50%);
-            top: -100%;
-            bottom: -100%;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .element-card:hover .connection-beam {
-            opacity: 0.5;
+            z-index: 10; opacity: 1; filter: none;
         }
 
-        /* Typography */
+        /* Specific Brand Colors */
+        .strategy-card.path-active { border-color: #f97316; box-shadow: 0 0 25px rgba(249, 115, 22, 0.3); }
+        .blueprint-card.path-active { border-color: #3b82f6; box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); background: rgba(59, 130, 246, 0.1); }
+
+        /* Connection Beam */
+        .connection-beam {
+            position: absolute; width: 2px;
+            background: linear-gradient(to bottom, transparent, #22d3ee, transparent);
+            left: 50%; transform: translateX(-50%);
+            top: -100%; bottom: -100%;
+            opacity: 0; transition: opacity 0.3s;
+            pointer-events: none; z-index: 0;
+        }
+        .element-card:hover .connection-beam { opacity: 0.5; }
+
+        /* Typography & Overlays */
         .atomic-number { font-size: 0.75rem; color: rgba(255,255,255,0.5); font-family: 'Orbitron', sans-serif; }
         .element-symbol {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 2.5rem; font-weight: 700;
             background: linear-gradient(to bottom right, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-family: 'Orbitron', sans-serif;
-            line-height: 1;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif; line-height: 1;
         }
         .element-name { font-size: 0.85rem; font-weight: 600; color: #e2e8f0; line-height: 1.2; }
         
+        /* Front face elements need backface hidden */
+        .atomic-number, .element-symbol, .element-name, .tech-overlay {
+            backface-visibility: hidden;
+        }
+
+        /* Tech Overlay (Desktop Hover) */
         .tech-overlay {
             position: absolute; inset: 0;
             background: rgba(15, 23, 42, 0.98);
-            padding: 1rem;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            text-align: center;
+            padding: 1rem; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
             opacity: 0; transform: translateY(10px);
             transition: all 0.3s ease; pointer-events: none;
         }
-        .element-card:hover .tech-overlay { opacity: 1; transform: translateY(0); }
+        
+        /* --- ELEMENT 10 TECH (BACK OF CARD) --- */
+        .element-ten-tech {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(15, 23, 42, 0.98) 30%, rgba(10, 14, 26, 0.99) 100%);
+            padding: 1rem; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            
+            /* Initial State: Hidden and Rotated 180deg (Facing BACKWARDS) */
+            opacity: 0; 
+            visibility: hidden; 
+            transform: rotateY(180deg); /* Crucial: It must be rotated relative to parent */
+            
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            backface-visibility: hidden; /* Hides it when card is facing front */
+            pointer-events: none; z-index: 50;
+            border-radius: inherit;
+        }
+        
+        /* Mobile Flip State (Parent Card) */
+        .element-card.mobile-active {
+            transform: scale(1.05) rotateY(180deg); /* Flip the parent 180deg */
+            border-color: #22d3ee;
+            z-index: 40;
+            background: #0f172a; /* Ensure back doesn't bleed through */
+        }
+
+        /* Mobile Flip State (Back Content) */
+        .element-card.mobile-active .element-ten-tech {
+            opacity: 1; 
+            visibility: visible; 
+            pointer-events: auto;
+            /* FIX: Do NOT reset rotation to 0deg. Keep it at 180deg so it faces viewer when parent is flipped */
+            transform: rotateY(180deg); 
+        }
+
+        /* Hide Front Elements during flip */
+        .element-card.mobile-active .atomic-number,
+        .element-card.mobile-active .element-symbol,
+        .element-card.mobile-active .element-name {
+            opacity: 0; visibility: hidden;
+            transition-delay: 0.2s;
+        }
 
         /* Animations */
         @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-on-scroll { opacity: 0; }
-        
-        /* Filter Buttons */
-        .filter-btn { transition: all 0.3s ease; }
         .filter-btn.active { background-color: #22d3ee; color: #0f172a; box-shadow: 0 0 15px rgba(34, 211, 238, 0.5); }
 
-        /* Mobile Specific Styles */
-        @media (max-width: 768px) {
-            .periodic-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 0.75rem;
-            }
-
-            .element-card {
-                padding: 0.75rem;
-                font-size: 0.85em;
-            }
-
-            .element-symbol {
-                font-size: 1.8rem;
-            }
-
-            .element-name {
-                font-size: 0.75rem;
-            }
-
-            .mobile-menu {
-                display: flex;
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease;
-            }
-
-            .mobile-menu.open {
-                opacity: 1;
-                visibility: visible;
-            }
-
-            .site-header {
-                padding: 0.75rem 1rem;
-                z-index: 60;
-            }
-
-            .filter-btn {
-                font-size: 0.875rem;
-                padding: 0.5rem 1rem;
-            }
-
-            /* Better mobile hero spacing */
-            .hero-bg {
-                min-height: 100vh;
-                padding-top: 80px;
-            }
-
-            .hero-bg h1 {
-                font-size: 2.5rem;
-                line-height: 1.1;
-            }
-
-            .hero-bg p {
-                font-size: 1rem;
-            }
-
-            /* Mobile Operating Model Connections */
-            .op-module {
-                position: relative;
-                transition: all 0.3s ease;
-            }
-
-            .op-module::after {
-                content: '';
-                position: absolute;
-                bottom: -1rem;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 2px;
-                height: 1rem;
-                background: linear-gradient(to bottom, currentColor, transparent);
-                opacity: 0.3;
-            }
-
-            .op-module:last-child::after {
-                display: none;
-            }
-
-            /* Better visual flow for mobile op model */
-            #strategy-label,
-            #blueprint-label,
-            #execution-label {
-                margin-bottom: 0.5rem;
-            }
-
-            .bg-slate-900\\/40 {
-                position: relative;
-            }
-
-            .bg-slate-900\\/40::before {
-                content: '';
-                position: absolute;
-                top: -0.5rem;
-                left: 1rem;
-                right: 1rem;
-                height: 1px;
-                background: linear-gradient(to right, transparent, rgba(34, 211, 238, 0.2), transparent);
-                z-index: 1;
-            }
-
-            /* Strategy card hover effects on mobile */
-            .strategy-card:hover {
-                transform: translateX(4px);
-            }
-
-            /* Blueprint card mobile improvements */
-            #blueprint-card:hover {
-                transform: scale(1.02);
-            }
-
-            /* Element card mobile connection improvements */
-            .element-card:hover .connection-beam {
-                opacity: 0.8;
-                height: 200%;
-            }
-
-            /* Visual connectors between sections on mobile and tablet */
-            @media (max-width: 1024px) {
-                .op-module {
-                    margin-bottom: 0.75rem;
-                    position: relative;
-                }
-
-                .bg-slate-900\\/40 {
-                    margin-top: 1.5rem;
-                    position: relative;
-                }
-
-                /* Visible connection indicators for mobile */
-                .bg-slate-900\\/40::before {
-                    content: '';
-                    position: absolute;
-                    top: -1rem;
-                    left: 1.5rem;
-                    width: 4px;
-                    height: 1rem;
-                    background: linear-gradient(to bottom,
-                        rgba(34, 211, 238, 0.6),
-                        rgba(34, 211, 238, 0.2));
-                    border-radius: 2px;
-                    box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
-                }
-
-                /* Always visible connection indicators on mobile */
-                .strategy-card {
-                    border-left: 3px solid rgba(249, 115, 22, 0.4);
-                    transition: all 0.2s ease;
-                }
-
-                .strategy-card:active {
-                    border-left-color: rgba(249, 115, 22, 0.8);
-                    transform: translateX(3px);
-                    box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
-                }
-
-                #blueprint-card {
-                    border-left: 3px solid rgba(59, 130, 246, 0.4);
-                    transition: all 0.2s ease;
-                }
-
-                #blueprint-card:active {
-                    border-left-color: rgba(59, 130, 246, 0.8);
-                    transform: translateX(3px);
-                    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
-                }
-
-                /* Always visible connection beams for mobile */
-                .element-card .connection-beam {
-                    opacity: 0.4;
-                    background: linear-gradient(to bottom,
-                        transparent 0%,
-                        rgba(34, 211, 238, 0.2) 20%,
-                        rgba(34, 211, 238, 0.4) 50%,
-                        rgba(34, 211, 238, 0.2) 80%,
-                        transparent 100%);
-                    transition: all 0.2s ease;
-                }
-
-                .element-card:active .connection-beam {
-                    opacity: 1;
-                    background: linear-gradient(to bottom,
-                        transparent 0%,
-                        rgba(34, 211, 238, 0.4) 20%,
-                        rgba(34, 211, 238, 0.8) 50%,
-                        rgba(34, 211, 238, 0.4) 80%,
-                        transparent 100%);
-                    box-shadow: 0 0 20px rgba(34, 211, 238, 0.6);
-                }
-
-                /* Enhanced element cards for touch */
-                .element-card {
-                    transform: scale(1);
-                    transition: all 0.2s ease;
-                }
-
-                .element-card:active {
-                    transform: scale(0.95);
-                }
-
-                /* Mobile section label improvements */
-                .op-module {
-                    position: relative;
-                }
-
-                .op-module::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -1rem;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 20px;
-                    height: 2px;
-                    background: linear-gradient(to right,
-                        transparent,
-                        rgba(34, 211, 238, 0.5),
-                        transparent);
-                }
-
-                .op-module:last-child::after {
-                    display: none;
-                }
-            }
-
-            /* Mobile Element 10 Tech Stack Reveal */
-            @media (max-width: 1024px) {
-                /* Strategy and Blueprint cards - simple highlight */
-                .strategy-card.mobile-active {
-                    border-left-color: rgba(249, 115, 22, 0.9);
-                    transform: translateX(4px);
-                    background: rgba(249, 115, 22, 0.1);
-                    box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
-                }
-
-                #blueprint-card.mobile-active {
-                    border-left-color: rgba(59, 130, 246, 0.9);
-                    transform: translateX(4px);
-                    background: rgba(59, 130, 246, 0.1);
-                    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-                }
-
-                /* Element cards - Element 10 style tech reveal */
-                .element-card {
-                    position: relative;
-                    transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
-                }
-
-                .element-card.mobile-active {
-                    transform: scale(1.05);
-                    border-color: #22d3ee;
-                    background: rgba(15, 23, 42, 0.98);
-                    box-shadow: 0 0 30px rgba(34, 211, 238, 0.5);
-                    z-index: 40;
-                }
-
-                /* Completely hide original element info when overlay is active */
-                .element-card.mobile-active .atomic-number,
-                .element-card.mobile-active .element-symbol,
-                .element-card.mobile-active .element-name {
-                    opacity: 0;
-                    visibility: hidden;
-                    transform: scale(0.8);
-                    transition: all 0.2s ease;
-                    display: none;
-                }
-
-                /* Also hide the tech overlay base content */
-                .element-card.mobile-active .tech-overlay {
-                    opacity: 0;
-                    visibility: hidden;
-                    pointer-events: none;
-                }
-
-                /* Element 10 style tech stack overlay */
-                .element-card .element-ten-tech {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: linear-gradient(135deg,
-                        rgba(34, 211, 238, 0.1) 0%,
-                        rgba(15, 23, 42, 0.98) 30%,
-                        rgba(10, 14, 26, 0.99) 100%);
-                    padding: 1rem;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    text-align: center;
-                    opacity: 0;
-                    visibility: hidden;
-                    transform: scale(0.8);
-                    transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
-                    border-radius: inherit;
-                    z-index: 50;
-                    backdrop-filter: blur(2px);
-                }
-
-                .element-card.mobile-active .element-ten-tech {
-                    opacity: 1;
-                    visibility: visible;
-                    transform: scale(1);
-                }
-
-                .element-ten-tech .tech-title {
-                    font-family: 'Orbitron', sans-serif;
-                    font-size: 0.9rem;
-                    font-weight: 700;
-                    color: #22d3ee;
-                    margin-bottom: 0.5rem;
-                    text-transform: uppercase;
-                    letter-spacing: 0.1em;
-                }
-
-                .element-ten-tech .tech-stack {
-                    font-size: 0.65rem;
-                    color: #e2e8f0;
-                    line-height: 1.4;
-                    margin: 0.5rem 0;
-                }
-
-                .element-ten-tech .tech-number {
-                    display: none;
-                }
-
-                .element-ten-tech .tech-symbol {
-                    display: none;
-                }
-
-                .element-ten-tech .tech-name {
-                    display: none;
-                }
-
-                /* Enhanced connection beams for Element 10 */
-                .element-card.mobile-active .connection-beam {
-                    opacity: 1;
-                    width: 3px;
-                    background: linear-gradient(to bottom,
-                        transparent 0%,
-                        rgba(34, 211, 238, 0.4) 20%,
-                        rgba(34, 211, 238, 0.8) 50%,
-                        rgba(34, 211, 238, 0.4) 80%,
-                        transparent 100%);
-                    box-shadow: 0 0 25px rgba(34, 211, 238, 0.8);
-                }
-
-                /* Click indicators */
-                .element-card:not(.mobile-active)::after {
-                    content: '⟳';
-                    position: absolute;
-                    bottom: 6px;
-                    right: 6px;
-                    color: rgba(255, 255, 255, 0.3);
-                    font-size: 0.8rem;
-                    opacity: 0;
-                    transition: opacity 0.3s ease;
-                }
-
-                .element-card:not(.mobile-active):active::after {
-                    opacity: 1;
-                }
-
-                .element-card.mobile-active::after {
-                    content: '✕';
-                    position: absolute;
-                    bottom: 6px;
-                    right: 6px;
-                    color: #22d3ee;
-                    font-size: 0.8rem;
-                    opacity: 0.8;
-                }
-            }
-
-            /* Keep hover effects for desktop */
-            @media (min-width: 1025px) {
-                .strategy-card:hover {
-                    border-left-color: rgba(249, 115, 22, 0.6);
-                    transform: translateX(3px);
-                }
-
-                #blueprint-card:hover {
-                    border-left-color: rgba(59, 130, 246, 0.6);
-                    transform: translateX(3px);
-                }
-            }
+        /* Media Queries */
+        @media (min-width: 1025px) {
+            .element-card:hover .tech-overlay { opacity: 1; transform: translateY(0); }
+            /* Disable flip on desktop hover if desired, or keep it consistent */
         }
-
-        @media (max-width: 480px) {
-            .periodic-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 0.5rem;
-            }
-
-            .element-card {
-                padding: 0.5rem;
-            }
-
-            .element-symbol {
-                font-size: 1.5rem;
-            }
-
-            .hero-bg h1 {
-                font-size: 2rem;
-            }
-
-            .filter-btn {
-                font-size: 0.75rem;
-                padding: 0.375rem 0.75rem;
-            }
+        @media (max-width: 768px) {
+            .periodic-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+            .element-symbol { font-size: 1.8rem; }
+            .mobile-menu { transition: opacity 0.3s ease, visibility 0.3s; }
+            .mobile-menu.open { opacity: 1; visibility: visible; }
+            .writing-vertical-lr { font-size: 0.75rem; }
         }
     </style>
 </head>
-<body class="text-gray-200 antialiased">
+<body class="text-gray-200 antialiased bg-[#0a0e1a]">
 
     <!-- Header -->
     <header class="site-header fixed top-0 left-0 w-full z-50 py-4 px-6 lg:px-8">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="#" class="logo-link text-2xl font-bold font-orbitron text-white hover:text-cyan-400 transition-colors flex items-center gap-3">
-                <svg class="mascot w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <a href="#" class="text-2xl font-bold font-orbitron text-white hover:text-cyan-400 transition-colors flex items-center gap-3">
+                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
                     <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
                     <path d="M12 11V12" stroke="white" stroke-width="2" stroke-linecap="round"/>
                 </svg>
-                <span>cymonic<span class="text-cyan-400 dot">.</span>ai</span>
+                <span>cymonic<span class="text-cyan-400">.</span>ai</span>
             </a>
             <nav class="hidden md:flex items-center gap-8 font-medium">
-                <a href="#capabilities" class="nav-link text-gray-300 hover:text-white transition-colors">Capabilities</a>
-                <a href="#operating-model" class="nav-link text-gray-300 hover:text-white transition-colors">Operating Model</a>
+                <a href="#capabilities" class="text-gray-300 hover:text-white transition-colors">Capabilities</a>
+                <a href="#operating-model" class="text-gray-300 hover:text-white transition-colors">Operating Model</a>
                 <a href="#contact" class="bg-cyan-500/10 border border-cyan-500/50 text-cyan-400 px-4 py-2 rounded hover:bg-cyan-500 hover:text-white transition-all">Contact Us</a>
             </nav>
-            <button id="mobile-menu-btn" class="md:hidden text-white p-2 focus:outline-none">
+            <button id="mobile-menu-btn" class="md:hidden text-white p-2 focus:outline-none" aria-label="Open Menu">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
         </div>
     </header>
 
     <!-- Mobile Nav -->
-    <div id="mobile-menu" class="mobile-menu fixed inset-0 bg-gray-900/98 backdrop-blur-md z-50 flex items-center justify-center md:hidden opacity-0 invisible transition-all duration-300">
-        <button id="close-menu-btn" class="absolute top-8 right-8 text-white p-3 rounded-full border border-gray-700 hover:border-cyan-400 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <div id="mobile-menu" class="mobile-menu fixed inset-0 bg-gray-900/98 backdrop-blur-md z-50 flex items-center justify-center opacity-0 invisible">
+        <button id="close-menu-btn" class="absolute top-8 right-8 text-white p-3" aria-label="Close Menu">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
         <nav class="flex flex-col items-center gap-12 text-2xl font-orbitron">
             <a href="#capabilities" class="mobile-link text-white hover:text-cyan-400 transition-colors">Capabilities</a>
             <a href="#operating-model" class="mobile-link text-white hover:text-cyan-400 transition-colors">Operating Model</a>
-            <a href="#contact" class="mobile-link bg-cyan-500 text-black font-bold px-8 py-3 rounded-full hover:bg-cyan-400 transition-all shadow-lg">Contact</a>
+            <a href="#contact" class="mobile-link bg-cyan-500 text-black font-bold px-8 py-3 rounded-full shadow-lg">Contact</a>
         </nav>
     </div>
 
@@ -641,12 +244,8 @@
                 We bridge the gap between executive ambition and technical execution. We build the "Level 5" ecosystems that turn intelligent strategy into deployed, autonomous reality.
             </p>
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-on-scroll px-4" style="transition-delay: 400ms;">
-                <a href="#contact" class="bg-cyan-500 text-gray-900 font-bold py-3 md:py-4 px-6 md:px-8 rounded-lg text-base md:text-lg hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_0_20px_rgba(34,211,238,0.4)] w-full sm:w-auto">
-                    Discuss Your Challenge
-                </a>
-                <a href="#operating-model" class="border border-gray-600 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-lg text-base md:text-lg hover:border-cyan-400 hover:text-cyan-400 transition-all w-full sm:w-auto">
-                    View Operating Model
-                </a>
+                <a href="#contact" class="bg-cyan-500 text-gray-900 font-bold py-3 md:py-4 px-6 md:px-8 rounded-lg text-base md:text-lg hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_0_20px_rgba(34,211,238,0.4)] w-full sm:w-auto">Discuss Your Challenge</a>
+                <a href="#operating-model" class="border border-gray-600 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-lg text-base md:text-lg hover:border-cyan-400 hover:text-cyan-400 transition-all w-full sm:w-auto">View Operating Model</a>
             </div>
         </div>
     </div>
@@ -659,9 +258,8 @@
                     <h2 class="text-3xl md:text-5xl font-bold font-orbitron text-white mb-4 animate-on-scroll">Core Capabilities</h2>
                     <p class="text-xl text-gray-400 max-w-3xl mx-auto animate-on-scroll">Transforming ambition into engineering reality across 6 strategic pillars.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="capabilities-grid">
-                    <!-- Capabilities Injected by JS -->
-                </div>
+                <!-- Grid Populated via JS for Demo Compatibility -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="capabilities-grid"></div>
             </div>
         </section>
 
@@ -675,37 +273,31 @@
                     <p class="text-xl text-gray-400 max-w-3xl mx-auto animate-on-scroll">The <span class="text-cyan-400">Strategy-to-Execution</span> Matrix.</p>
                 </div>
                 
-                <!-- Filter Controls -->
-                <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-16 md:mb-20 animate-on-scroll relative z-20 px-4" id="filters-container">
-                    <!-- Filters Injected by JS -->
-                </div>
+                <!-- Filters -->
+                <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-16 md:mb-20 animate-on-scroll relative z-20 px-4" id="filters-container"></div>
 
-                <!-- MATRIX LAYOUT CONTAINER -->
+                <!-- Matrix Layout -->
                 <div class="flex flex-col gap-6 md:gap-8 lg:gap-12">
-
-                    <!-- ROW 1: VISION  -->
+                    <!-- Row 1: Strategy -->
                     <div class="grid grid-cols-1 lg:grid-cols-[120px_1fr] gap-4 md:gap-6 animate-on-scroll">
                         <div class="hidden lg:flex flex-col justify-center items-center border-l-4 border-orange-500 bg-slate-900/50 rounded-r-lg py-4 op-module" id="strategy-label">
                             <span class="writing-vertical-lr transform rotate-180 text-orange-500 font-orbitron font-bold tracking-widest uppercase whitespace-nowrap">VISION</span>
-                            <span class="text-gray-500 text-xs mt-2 font-mono">STRATEGIC CORE</span>
                         </div>
                         <div class="lg:hidden flex items-center gap-3 border-l-4 border-orange-500 pl-3 py-2 bg-slate-900/30 rounded-r-lg">
-                            <h3 class="text-orange-500 font-orbitron font-bold text-lg md:text-xl">VISION</h3>
+                            <h3 class="text-orange-500 font-orbitron font-bold text-lg">VISION</h3>
                         </div>
                         <div class="bg-slate-900/40 border border-slate-700/50 rounded-xl p-4 md:p-6">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6" id="strategy-grid">
-                                <!-- Strategy Cards Injected by JS -->
-                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6" id="strategy-grid"></div>
                         </div>
                     </div>
 
-                    <!-- ROW 2: ARCHITECTURE -->
+                    <!-- Row 2: Architecture -->
                     <div class="grid grid-cols-1 lg:grid-cols-[120px_1fr] gap-4 md:gap-6 animate-on-scroll">
                         <div class="hidden lg:flex flex-col justify-center items-center border-l-4 border-blue-500 bg-slate-900/50 rounded-r-lg py-4 op-module" id="blueprint-label">
                             <span class="writing-vertical-lr transform rotate-180 text-blue-500 font-orbitron font-bold tracking-widest uppercase whitespace-nowrap">ARCHITECTURE</span>
                         </div>
                         <div class="lg:hidden flex items-center gap-3 border-l-4 border-blue-500 pl-3 py-2 bg-slate-900/30 rounded-r-lg">
-                            <h3 class="text-blue-500 font-orbitron font-bold text-lg md:text-xl">ARCHITECTURE</h3>
+                            <h3 class="text-blue-500 font-orbitron font-bold text-lg">ARCHITECTURE</h3>
                         </div>
                         <div class="bg-slate-900/40 border border-slate-700/50 rounded-xl p-4 md:p-6 flex items-center justify-center relative overflow-hidden group op-module blueprint-card" id="blueprint-card">
                             <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
@@ -716,45 +308,33 @@
                         </div>
                     </div>
 
-                    <!-- ROW 3: REALITY  -->
+                    <!-- Row 3: Reality/Engineering -->
                     <div class="grid grid-cols-1 lg:grid-cols-[120px_1fr] gap-4 md:gap-6 animate-on-scroll">
                         <div class="hidden lg:flex flex-col justify-center items-center border-l-4 border-cyan-500 bg-slate-900/50 rounded-r-lg py-4 op-module" id="execution-label">
                             <span class="writing-vertical-lr transform rotate-180 text-cyan-500 font-orbitron font-bold tracking-widest uppercase whitespace-nowrap">REALITY</span>
-                            <span class="text-gray-500 text-xs mt-2 font-mono">ENGINEERING SCALE</span>
                         </div>
                         <div class="lg:hidden flex items-center gap-3 border-l-4 border-cyan-500 pl-3 py-2 bg-slate-900/30 rounded-r-lg">
-                            <h3 class="text-cyan-500 font-orbitron font-bold text-lg md:text-xl">REALITY</h3>
+                            <h3 class="text-cyan-500 font-orbitron font-bold text-lg">REALITY</h3>
                         </div>
 
                         <div class="bg-slate-900/40 border border-slate-700/50 rounded-xl p-4 md:p-6 relative">
-                            <div class="text-center mb-6 md:mb-8">
-                                <h4 class="text-cyan-400 font-bold font-orbitron tracking-widest text-xs md:text-sm uppercase">Specialized Engineering Guilds</h4>
-                            </div>
-
-                            <!-- Periodic Grid Container -->
-                            <div class="periodic-grid mb-8 md:mb-12" id="engineering-grid">
-                                <!-- Engineering Cards Injected by JS -->
-                            </div>
+                            <div class="periodic-grid mb-8 md:mb-12" id="engineering-grid"></div>
 
                             <!-- Support Dock -->
                             <div class="mt-8 md:mt-12 pt-8 md:pt-10 border-t border-slate-800 relative">
-                                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 w-px h-8 bg-gradient-to-b from-cyan-900/0 via-cyan-900 to-slate-800"></div>
                                 <div class="flex items-center justify-center gap-3 mb-6 md:mb-8">
                                     <div class="h-px w-8 md:w-12 bg-slate-800"></div>
                                     <h4 class="text-slate-500 text-[10px] md:text-xs font-orbitron tracking-[0.2em] uppercase">Growth & Enablement Layer</h4>
                                     <div class="h-px w-8 md:w-12 bg-slate-800"></div>
                                 </div>
-                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4" id="support-grid">
-                                    <!-- Support Cards Injected by JS -->
-                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4" id="support-grid"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        
-        <!-- Contact Section -->
+
         <section id="contact" class="py-16 md:py-20 bg-slate-900">
             <div class="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
                  <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold font-orbitron text-white mb-4 animate-on-scroll">Let's Build Together</h2>
@@ -774,178 +354,184 @@
         </div>
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- Modernized JS Logic -->
     <script>
-        // --- DATA CONFIGURATION ---
-        const config = {
-            filters: [
-                { id: 'all', label: 'All Teams' },
-                { id: 'ai', label: 'AI-First Innovation' },
-                { id: 'cloud', label: 'Cloud Transformation' },
-                { id: 'data', label: 'Data Engineering' },
-                { id: 'genai', label: 'GenAI & Agents' },
-                { id: 'ux', label: 'Mobility & UX' },
-                { id: 'iot', label: 'IoT & Edge' }
-            ],
-            capabilities: [
-                { iconPath: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', title: 'AI-First Innovation', desc: 'Probabilistic models driving logic.', bullets: ['Continuous Training (CT)', 'Adaptive Journeys'] },
-                { iconPath: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', title: 'Cloud Transformation', desc: 'From Lift & Shift to Serverless.', bullets: ['Scale-to-Zero', 'GitOps & Chaos Eng'] },
-                { iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4', title: 'Data Engineering', desc: 'Strategic assets via Data Mesh.', bullets: ['Event-Streaming Mesh', 'PII Masking'] },
-                { iconPath: 'M13 10V3L4 14h7v7l9-11h-7z', title: 'GenAI & Agents', desc: 'Reasoning agents for complex workflows.', bullets: ['Agentic Workflows', 'Cognitive Arch'] },
-                { iconPath: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z', title: 'Mobility & UX', desc: 'Predictive interfaces anticipating needs.', bullets: ['Generative UI', 'Predictive UX'] },
-                { iconPath: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z', title: 'IoT & Edge', desc: 'Swarm intelligence on-device.', bullets: ['Edge AI Training', 'Swarm Intel'] }
-            ],
-            strategy: [
-                { id: 'strat-1', title: 'OFFICE OF STRATEGY', desc: 'Enterprise Standards, Governance & Vision' },
-                { id: 'strat-2', title: 'PLATFORM CONVERGENCE', desc: 'Unified Cloud & Data Foundation Engineering' },
-                { id: 'strat-3', title: 'APPLIED INTELLIGENCE', desc: 'AI R&D, Model Governance & Roadmap' }
-            ],
-            engineering: [
-                { num: '01', sym: 'Cd', name: 'Cloud & Data Ops', stack: 'AWS, Azure, GCP, K8s, Terraform, Kafka', cats: 'cloud data iot', parent: 'strat-2' },
-                { num: '02', sym: 'Jv', name: 'Enterprise Java', stack: 'Spring Boot, Microservices, Jakarta EE', cats: 'cloud ai', parent: 'strat-2' },
-                { num: '03', sym: 'Ai', name: 'AI & Innovation', stack: 'Python, PyTorch, LLMs, RAG, LangChain', cats: 'ai genai', parent: 'strat-3' },
-                { num: '04', sym: 'Js', name: 'Full Stack JS', stack: 'React, Angular, Node.js, TypeScript, Next', cats: 'ux mobility', parent: 'strat-1' },
-                { num: '05', sym: 'Mo', name: 'Mobility', stack: 'iOS/Swift, Android/Kotlin, Flutter', cats: 'mobility ux iot', parent: 'strat-1' },
-                { num: '06', sym: 'Nt', name: 'Enterprise .NET', stack: '.NET Core, Azure Func, C#, Blazor', cats: 'cloud', parent: 'strat-2' },
-                { num: '07', sym: 'In', name: 'Integration', stack: 'MuleSoft, Apigee, GraphQL, REST', cats: 'data cloud', parent: 'strat-2' },
-                { num: '08', sym: 'Pe', name: 'Product Eng', stack: 'Agile, DevOps, CI/CD (Jenkins/GitLab)', cats: 'ai cloud data genai ux iot', parent: 'strat-1' },
-                { num: '09', sym: 'Xr', name: 'Immersive XR', stack: 'Unity, Unreal, WebXR, AR/VR', cats: 'ux mobility', parent: 'strat-3' },
-                { num: '10', sym: 'Sf', name: 'Salesforce', stack: 'Sales Cloud, Apex, LWC', cats: 'cloud data', parent: 'strat-2' },
-                { num: '11', sym: 'Ra', name: 'Rapid App Dev', stack: 'OutSystems, Mendix, Low-Code', cats: 'ux cloud', parent: 'strat-1' },
-                { num: '12', sym: 'Qe', name: 'Quality Assurance', stack: 'Selenium, Cypress, Chaos Eng', cats: 'cloud ai', parent: 'strat-1' }
-            ],
-            support: [
-                { iconPath: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01', title: 'Program Mgmt', desc: 'Agile Delivery' },
-                { iconPath: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z', title: 'Solution Eng', desc: 'Tech Pre-Sales' },
-                { iconPath: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6', title: 'Growth Strategy', desc: 'Market Align' },
-                { iconPath: 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', title: 'Vertical Experts', desc: 'SMEs' },
-                { iconPath: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', title: 'People & Culture', desc: 'Talent & HR' },
-                { iconPath: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', title: 'Operations', desc: 'Shared Svcs' }
-            ]
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA ---
+            const data = {
+                filters: [
+                    { id: 'all', label: 'All Teams' }, { id: 'ai', label: 'AI-First Innovation' }, { id: 'cloud', label: 'Cloud Transformation' },
+                    { id: 'data', label: 'Data Engineering' }, { id: 'genai', label: 'GenAI & Agents' }, { id: 'ux', label: 'Mobility & UX' }, { id: 'iot', label: 'IoT & Edge' }
+                ],
+                capabilities: [
+                    { icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', title: 'AI-First Innovation', desc: 'Probabilistic models driving logic.', bullets: ['Continuous Training (CT)', 'Adaptive Journeys'] },
+                    { icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', title: 'Cloud Transformation', desc: 'From Lift & Shift to Serverless.', bullets: ['Scale-to-Zero', 'GitOps & Chaos Eng'] },
+                    { icon: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4', title: 'Data Engineering', desc: 'Strategic assets via Data Mesh.', bullets: ['Event-Streaming Mesh', 'PII Masking'] },
+                    { icon: 'M13 10V3L4 14h7v7l9-11h-7z', title: 'GenAI & Agents', desc: 'Reasoning agents for complex workflows.', bullets: ['Agentic Workflows', 'Cognitive Arch'] },
+                    { icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z', title: 'Mobility & UX', desc: 'Predictive interfaces anticipating needs.', bullets: ['Generative UI', 'Predictive UX'] },
+                    { icon: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z', title: 'IoT & Edge', desc: 'Swarm intelligence on-device.', bullets: ['Edge AI Training', 'Swarm Intel'] }
+                ],
+                strategy: [
+                    { id: 'strat-1', title: 'OFFICE OF STRATEGY', desc: 'Enterprise Standards, Governance & Vision' },
+                    { id: 'strat-2', title: 'PLATFORM CONVERGENCE', desc: 'Unified Cloud & Data Foundation Engineering' },
+                    { id: 'strat-3', title: 'APPLIED INTELLIGENCE', desc: 'AI R&D, Model Governance & Roadmap' }
+                ],
+                engineering: [
+                    { num: '01', sym: 'Cd', name: 'Cloud & Data Ops', stack: 'AWS, Azure, GCP, K8s, Terraform, Kafka', cats: 'cloud data iot', parent: 'strat-2' },
+                    { num: '02', sym: 'Jv', name: 'Enterprise Java', stack: 'Spring Boot, Microservices, Jakarta EE', cats: 'cloud ai', parent: 'strat-2' },
+                    { num: '03', sym: 'Ai', name: 'AI & Innovation', stack: 'Python, PyTorch, LLMs, RAG, LangChain', cats: 'ai genai', parent: 'strat-3' },
+                    { num: '04', sym: 'Js', name: 'Full Stack JS', stack: 'React, Angular, Node.js, TypeScript, Next', cats: 'ux mobility', parent: 'strat-1' },
+                    { num: '05', sym: 'Mo', name: 'Mobility', stack: 'iOS/Swift, Android/Kotlin, Flutter', cats: 'mobility ux iot', parent: 'strat-1' },
+                    { num: '06', sym: 'Nt', name: 'Enterprise .NET', stack: '.NET Core, Azure Func, C#, Blazor', cats: 'cloud', parent: 'strat-2' },
+                    { num: '07', sym: 'In', name: 'Integration', stack: 'MuleSoft, Apigee, GraphQL, REST', cats: 'data cloud', parent: 'strat-2' },
+                    { num: '08', sym: 'Pe', name: 'Product Eng', stack: 'Agile, DevOps, CI/CD (Jenkins/GitLab)', cats: 'ai cloud data genai ux iot', parent: 'strat-1' },
+                    { num: '09', sym: 'Xr', name: 'Immersive XR', stack: 'Unity, Unreal, WebXR, AR/VR', cats: 'ux mobility', parent: 'strat-3' },
+                    { num: '10', sym: 'Sf', name: 'Salesforce', stack: 'Sales Cloud, Apex, LWC', cats: 'cloud data', parent: 'strat-2' },
+                    { num: '11', sym: 'Ra', name: 'Rapid App Dev', stack: 'OutSystems, Mendix, Low-Code', cats: 'ux cloud', parent: 'strat-1' },
+                    { num: '12', sym: 'Qe', name: 'Quality Assurance', stack: 'Selenium, Cypress, Chaos Eng', cats: 'cloud ai', parent: 'strat-1' }
+                ],
+                support: [
+                    { icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01', title: 'Program Mgmt', desc: 'Agile Delivery' },
+                    { icon: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z', title: 'Solution Eng', desc: 'Tech Pre-Sales' },
+                    { icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6', title: 'Growth Strategy', desc: 'Market Align' },
+                    { icon: 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', title: 'Vertical Experts', desc: 'SMEs' },
+                    { icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', title: 'People & Culture', desc: 'Talent & HR' },
+                    { icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', title: 'Operations', desc: 'Shared Svcs' }
+                ]
+            };
 
-        // --- GLOBAL FUNCTIONS (Window Attached) ---
-        window.highlightPath = function(strategyId, element) {
-            const stratCard = document.getElementById(strategyId);
-            if(stratCard) stratCard.classList.add('path-active');
-            
-            const blueprint = document.getElementById('blueprint-card');
-            if(blueprint) blueprint.classList.add('path-active');
-            
-            document.getElementById('strategy-label').classList.add('path-active');
-            document.getElementById('blueprint-label').classList.add('path-active');
-            document.getElementById('execution-label').classList.add('path-active');
-        };
+            // --- DOM RENDERERS ---
+            const render = (id, html) => document.getElementById(id).innerHTML = html;
 
-        window.clearPath = function(strategyId, element) {
-            const stratCard = document.getElementById(strategyId);
-            if(stratCard) stratCard.classList.remove('path-active');
-
-            const blueprint = document.getElementById('blueprint-card');
-            if(blueprint) blueprint.classList.remove('path-active');
-
-            document.getElementById('strategy-label').classList.remove('path-active');
-            document.getElementById('blueprint-label').classList.remove('path-active');
-            document.getElementById('execution-label').classList.remove('path-active');
-        };
-
-        // --- RENDERING & INIT ---
-        function renderEverything() {
-            // 1. Render Filters
-            const filterContainer = document.getElementById('filters-container');
-            filterContainer.innerHTML = config.filters.map((f, i) =>
+            render('filters-container', data.filters.map((f, i) => 
                 `<button class="filter-btn ${i===0?'active':''} px-3 md:px-5 py-1.5 md:py-2 rounded-full border border-cyan-500/30 text-xs md:text-sm font-semibold text-white hover:border-cyan-400 transition-all" data-filter="${f.id}">${f.label}</button>`
-            ).join('');
+            ).join(''));
 
-            // 2. Render Capabilities
-            const capContainer = document.getElementById('capabilities-grid');
-            capContainer.innerHTML = config.capabilities.map(c => `
+            render('capabilities-grid', data.capabilities.map(c => `
                 <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-xl hover:border-cyan-500/50 hover:bg-slate-800 transition-all group animate-on-scroll">
                     <div class="w-12 h-12 bg-cyan-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${c.iconPath}"></path></svg>
+                        <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${c.icon}"></path></svg>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3 font-orbitron">${c.title}</h3>
                     <p class="text-gray-400 text-sm mb-4">${c.desc}</p>
                     <ul class="text-cyan-400 text-xs space-y-1">${c.bullets.map(b => `<li>• ${b}</li>`).join('')}</ul>
                 </div>
-            `).join('');
+            `).join(''));
 
-            // 3. Render Strategy (Layer 1)
-            const stratContainer = document.getElementById('strategy-grid');
-            stratContainer.innerHTML = config.strategy.map(s => `
+            render('strategy-grid', data.strategy.map(s => `
                 <div class="bg-slate-800/80 border border-slate-700 p-5 rounded-lg text-center hover:border-orange-500/50 transition-colors op-module strategy-card" id="${s.id}">
                     <h4 class="text-white font-bold mb-2 font-orbitron">${s.title}</h4>
                     <p class="text-xs text-gray-400">${s.desc}</p>
                 </div>
-            `).join('');
+            `).join(''));
 
-            // 4. Render Engineering (Layer 3)
-            const engContainer = document.getElementById('engineering-grid');
-            engContainer.innerHTML = config.engineering.map(e => `
-                <div class="element-card group" data-categories="${e.cats}" data-parent="${e.parent}" onmouseenter="highlightPath('${e.parent}', this)" onmouseleave="clearPath('${e.parent}', this)">
+            render('engineering-grid', data.engineering.map(e => `
+                <div class="element-card group" data-categories="${e.cats}" data-parent="${e.parent}">
                     <div class="connection-beam"></div>
                     <div class="atomic-number">${e.num}</div>
                     <div class="element-symbol">${e.sym}</div>
                     <div class="element-name">${e.name}</div>
-
-                    <!-- Element 10 Style Tech Overlay -->
+                    <div class="tech-overlay">
+                        <h5 class="text-cyan-400 font-bold text-xs mb-1">STACK</h5>
+                        <p class="text-xs text-gray-300 leading-snug">${e.stack}</p>
+                    </div>
                     <div class="element-ten-tech">
-                        <div class="tech-number">${e.num}</div>
-                        <div class="tech-symbol">${e.sym}</div>
-                        <div class="tech-name">${e.name}</div>
-                        <div class="tech-title">${e.name}</div>
-                        <div class="tech-stack">${e.stack}</div>
+                        <h5 class="text-cyan-400 font-bold text-xs mb-2">${e.name}</h5>
+                        <p class="text-xs text-gray-300 leading-snug">${e.stack}</p>
                     </div>
                 </div>
-            `).join('');
+            `).join(''));
 
-            // 5. Render Support (Layer 4)
-            const suppContainer = document.getElementById('support-grid');
-            suppContainer.innerHTML = config.support.map(s => `
+            render('support-grid', data.support.map(s => `
                 <div class="group relative bg-slate-900/80 border border-slate-800 p-4 rounded-lg hover:border-indigo-500/50 transition-all duration-300 flex flex-col items-center gap-3 text-center op-module">
                     <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500/0 group-hover:bg-indigo-500 transition-colors"></div>
                     <div class="p-2 rounded-md bg-slate-800 group-hover:bg-indigo-500/10 group-hover:text-indigo-400 text-slate-400 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="${s.iconPath}"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="${s.icon}"></path></svg>
                     </div>
                     <div>
                         <h5 class="text-gray-200 font-bold text-xs font-orbitron mb-1 group-hover:text-indigo-300">${s.title}</h5>
                         <p class="text-[10px] text-gray-500 leading-tight">${s.desc}</p>
                     </div>
                 </div>
-            `).join('');
+            `).join(''));
 
-            initInteractions();
-        }
-
-        function initInteractions() {
-            // Filter Logic with Event Delegation (Robust Fix)
-            const filterContainer = document.getElementById('filters-container');
-            const elementCards = document.querySelectorAll('.element-card');
-
-            if (filterContainer && elementCards.length > 0) {
-                filterContainer.addEventListener('click', (e) => {
-                    const btn = e.target.closest('.filter-btn');
-                    if (!btn) return;
-
-                    // Toggle Active Class
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-
-                    // Filter Logic
-                    const filterValue = btn.getAttribute('data-filter');
-                    elementCards.forEach(card => {
-                        const categories = card.getAttribute('data-categories') ? card.getAttribute('data-categories').split(' ') : [];
-                        if (filterValue === 'all' || categories.includes(filterValue)) {
-                            card.classList.remove('dimmed');
-                        } else {
-                            card.classList.add('dimmed');
-                        }
-                    });
+            // --- EVENT DELEGATION (Optimized) ---
+            
+            // 1. Filters
+            document.getElementById('filters-container').addEventListener('click', (e) => {
+                const btn = e.target.closest('.filter-btn');
+                if (!btn) return;
+                
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const filter = btn.dataset.filter;
+                document.querySelectorAll('.element-card').forEach(card => {
+                    const cats = (card.dataset.categories || '').split(' ');
+                    card.classList.toggle('dimmed', filter !== 'all' && !cats.includes(filter));
                 });
-            }
+            });
 
-            // Scroll Animation Observer
-            const observer = new IntersectionObserver((entries) => {
+            // 2. Element Card Interactions (Hover + Click)
+            const engGrid = document.getElementById('engineering-grid');
+            
+            // Hover Effects (Desktop)
+            engGrid.addEventListener('mouseover', (e) => {
+                if (window.innerWidth <= 1024) return; // Ignore on mobile
+                const card = e.target.closest('.element-card');
+                if (!card) return;
+                
+                const parentId = card.dataset.parent;
+                if (parentId) {
+                    document.getElementById(parentId)?.classList.add('path-active');
+                    document.getElementById('blueprint-card')?.classList.add('path-active');
+                    ['strategy-label', 'blueprint-label', 'execution-label'].forEach(id => 
+                        document.getElementById(id)?.classList.add('path-active')
+                    );
+                }
+            });
+
+            engGrid.addEventListener('mouseout', (e) => {
+                if (window.innerWidth <= 1024) return;
+                const card = e.target.closest('.element-card');
+                if (!card) return;
+                
+                const parentId = card.dataset.parent;
+                if (parentId) {
+                    document.getElementById(parentId)?.classList.remove('path-active');
+                    document.getElementById('blueprint-card')?.classList.remove('path-active');
+                    ['strategy-label', 'blueprint-label', 'execution-label'].forEach(id => 
+                        document.getElementById(id)?.classList.remove('path-active')
+                    );
+                }
+            });
+
+            // Click Logic (Mobile "Flip")
+            engGrid.addEventListener('click', (e) => {
+                if (window.innerWidth > 1024) return; // Ignore on desktop
+                const card = e.target.closest('.element-card');
+                if (!card) return;
+
+                e.stopPropagation();
+                const isActive = card.classList.contains('mobile-active');
+                
+                // Reset all
+                document.querySelectorAll('.element-card').forEach(c => c.classList.remove('mobile-active'));
+                
+                if (!isActive) card.classList.add('mobile-active');
+            });
+
+            // Close mobile active state when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.element-card')) {
+                    document.querySelectorAll('.element-card').forEach(c => c.classList.remove('mobile-active'));
+                }
+            });
+
+            // --- ANIMATION & UI ---
+            
+            // Scroll Observer
+            const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.style.animation = `fade-in-up 0.8s ease-out forwards`;
@@ -954,30 +540,40 @@
                 });
             });
             document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-        }
 
-        // --- BOOTSTRAP ---
-        window.addEventListener('DOMContentLoaded', () => {
-            renderEverything();
-            
-            // Hero Particles
+            // Header Scroll
+            window.addEventListener('scroll', () => {
+                document.querySelector('.site-header').classList.toggle('scrolled', window.scrollY > 50);
+            });
+
+            // Mobile Menu
+            const menu = document.getElementById('mobile-menu');
+            const toggleMenu = () => {
+                menu.classList.toggle('open');
+                document.body.classList.toggle('overflow-hidden');
+            };
+            document.getElementById('mobile-menu-btn').addEventListener('click', toggleMenu);
+            document.getElementById('close-menu-btn').addEventListener('click', toggleMenu);
+            document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', toggleMenu));
+
+            // --- OPTIMIZED PARTICLES ---
             const canvas = document.getElementById('hero-canvas');
             const ctx = canvas.getContext('2d');
-            let particles = [];
-            let w = canvas.width = window.innerWidth;
-            let h = canvas.height = window.innerHeight;
+            let particles = [], w, h;
 
-            window.addEventListener('resize', () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; initParticles(); });
-
-            function initParticles() {
-                particles = Array.from({length: Math.floor(w * h / 12000)}, () => ({
+            const initParticles = () => {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                // Optimization: drastically reduce particle count on mobile to save battery
+                const density = w < 768 ? 25000 : 12000; 
+                particles = Array.from({length: Math.floor(w * h / density)}, () => ({
                     x: Math.random() * w, y: Math.random() * h,
                     vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
                     r: Math.random() * 1.5 + 0.5
                 }));
-            }
+            };
 
-            function animate() {
+            const animate = () => {
                 ctx.clearRect(0, 0, w, h);
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
                 ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
@@ -986,6 +582,7 @@
                     p.x += p.vx; p.y += p.vy;
                     if (p.x < 0 || p.x > w) p.vx *= -1;
                     if (p.y < 0 || p.y > h) p.vy *= -1;
+                    
                     ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
                     
                     for (let j = i + 1; j < particles.length; j++) {
@@ -998,61 +595,11 @@
                     }
                 });
                 requestAnimationFrame(animate);
-            }
-            initParticles(); animate();
-            
-            // Header Scroll
-            const header = document.querySelector('.site-header');
-            window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 50));
+            };
 
-            // Mobile Menu
-            const menuBtn = document.getElementById('mobile-menu-btn');
-            const closeBtn = document.getElementById('close-menu-btn');
-            const menu = document.getElementById('mobile-menu');
-            const toggleMenu = () => { menu.classList.toggle('open'); document.body.classList.toggle('overflow-hidden'); };
-            [menuBtn, closeBtn, ...document.querySelectorAll('.mobile-link')].forEach(el => el?.addEventListener('click', toggleMenu));
-
-            // Mobile Touch Toggle for Connections
-            if (window.innerWidth <= 1024) {
-                const strategyCards = document.querySelectorAll('.strategy-card');
-                const blueprintCard = document.getElementById('blueprint-card');
-                const elementCards = document.querySelectorAll('.element-card');
-
-                // Strategy cards toggle
-                strategyCards.forEach(card => {
-                    card.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const isActive = this.classList.contains('mobile-active');
-
-                        // Remove active from all strategy cards
-                        strategyCards.forEach(c => c.classList.remove('mobile-active'));
-
-                        if (!isActive) {
-                            this.classList.add('mobile-active');
-                        }
-                    });
-                });
-
-                // Blueprint card toggle
-                blueprintCard.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    this.classList.toggle('mobile-active');
-                });
-
-                // Element cards toggle
-                elementCards.forEach(card => {
-                    card.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const isActive = this.classList.contains('mobile-active');
-
-                        if (isActive) {
-                            this.classList.remove('mobile-active');
-                        } else {
-                            this.classList.add('mobile-active');
-                        }
-                    });
-                });
-            }
+            window.addEventListener('resize', initParticles);
+            initParticles();
+            animate();
         });
     </script>
 </body>
