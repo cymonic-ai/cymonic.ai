@@ -1,385 +1,600 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cymonic.ai - Enterprise AI & Cloud-Native Development | cymonic.ai</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- SEO & Metadata -->
+    <title>cymonic.ai | Enterprise AI & Cloud-Native Architecture</title>
+    <meta name="description" content="Cymonic.com bridges ambition and reality. We architect and engineer intelligent, scalable enterprise solutions.">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        orbitron: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        cyan: {
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            900: '#164e63',
+                        },
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
+        /* Core Styles */
         html {
-            scroll-behavior: smooth;
+            scroll-padding-top: 90px;
+            background-color: #0a0e1a;
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a0e1a; /* A very dark navy blue */
-        }
-        .font-orbitron {
-            font-family: 'Orbitron', sans-serif;
-        }
+
         .hero-bg {
             position: relative;
             background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
             overflow: hidden;
         }
+        
         canvas {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
         }
-        .content-overlay {
-            position: relative;
-            z-index: 2;
-        }
+        
+        .content-overlay { position: relative; z-index: 2; }
 
+        /* Header */
         .site-header {
             background-color: rgba(10, 14, 26, 0.5);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: background-color 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+            border-bottom: 1px solid rgba(34, 211, 238, 0.1);
         }
-
         .site-header.scrolled {
-            background-color: rgba(10, 14, 26, 0.85);
+            background-color: rgba(10, 14, 26, 0.95);
+            border-bottom: 1px solid rgba(34, 211, 238, 0.3);
         }
 
-        .logo-link .dot {
-            animation: pulse-dot 2.5s infinite ease-in-out;
-            display: inline-block; /* Required for transform */
+        /* Periodic Grid */
+        .periodic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .element-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            aspect-ratio: 1 / 1;
+            position: relative;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        /* -- PATHWAY / CONNECTION STATES -- */
+        
+        /* Dimmed State (Inactive) */
+        .op-module.dimmed,
+        .element-card.dimmed {
+            opacity: 0.15;
+            filter: grayscale(100%) blur(1px);
+            transform: scale(0.95);
+        }
+
+        /* Active/Hover State */
+        .op-module.path-active,
+        .element-card.path-active,
+        .element-card:hover {
+            background: rgba(30, 41, 59, 0.95);
+            border-color: #22d3ee;
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.25);
+            transform: translateY(-5px) scale(1.02);
+            z-index: 10;
+            opacity: 1;
+            filter: none;
         }
         
-        .logo-link .mascot {
-            transition: transform 0.4s ease-in-out;
+        /* Strategy & Blueprint Highlight specific colors */
+        .strategy-card.path-active {
+            border-color: #f97316; /* Orange for Strategy */
+            box-shadow: 0 0 25px rgba(249, 115, 22, 0.3);
         }
-
-        .logo-link:hover .mascot {
-            transform: rotate(180deg);
+        
+        .blueprint-card.path-active {
+            border-color: #3b82f6; /* Blue for Blueprint */
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+            background: rgba(59, 130, 246, 0.1);
         }
-
-        .nav-link {
-            position: relative;
-        }
-        .nav-link::after {
-            content: '';
+        
+        /* Connection Line (Vertical Beam) */
+        .connection-beam {
             position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -4px;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #22d3ee, transparent);
             left: 50%;
             transform: translateX(-50%);
-            background-color: #22d3ee;
-            transition: width 0.3s ease-in-out;
+            top: -100%;
+            bottom: -100%;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 0;
         }
-        .nav-link:hover::after {
-            width: 100%;
+        .element-card:hover .connection-beam {
+            opacity: 0.5;
         }
 
+        /* Typography */
+        .atomic-number { font-size: 0.75rem; color: rgba(255,255,255,0.5); font-family: 'Orbitron', sans-serif; }
+        .element-symbol {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to bottom right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+            line-height: 1;
+        }
+        .element-name { font-size: 0.85rem; font-weight: 600; color: #e2e8f0; line-height: 1.2; }
         
-        /* Microanimations */
-        .cta-button {
-            transition: all 0.3s ease-in-out;
+        .tech-overlay {
+            position: absolute; inset: 0;
+            background: rgba(15, 23, 42, 0.98);
+            padding: 1rem;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center;
+            opacity: 0; transform: translateY(10px);
+            transition: all 0.3s ease; pointer-events: none;
         }
-        .cta-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
-        }
-
-        .pillar-card {
-            background: rgba(16, 24, 40, 0.7);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            transition: all 0.3s ease-in-out;
-        }
-
-        .pillar-card:hover {
-            transform: translateY(-8px);
-            background: rgba(16, 24, 40, 1);
-            border-color: rgba(56, 189, 248, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-        }
+        .element-card:hover .tech-overlay { opacity: 1; transform: translateY(0); }
 
         /* Animations */
-        @keyframes fade-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes pulse-dot {
-            0%, 100% {
-                transform: scale(1);
-                text-shadow: 0 0 5px rgba(34, 211, 238, 0.7);
-            }
-            50% {
-                transform: scale(1.3);
-                text-shadow: 0 0 20px rgba(34, 211, 238, 1);
-            }
-        }
-        .animate-fade-in-up {
-            animation: fade-in-up 0.8s ease-out forwards;
-        }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-on-scroll { opacity: 0; }
         
-        /* Staggered animations */
-        .section-title, .section-subtitle, .pillar-card, .contact-text {
-            opacity: 0;
-        }
+        /* Filter Buttons */
+        .filter-btn { transition: all 0.3s ease; }
+        .filter-btn.active { background-color: #22d3ee; color: #0f172a; box-shadow: 0 0 15px rgba(34, 211, 238, 0.5); }
     </style>
 </head>
-<body class="text-gray-200">
+<body class="text-gray-200 antialiased">
 
+    <!-- Header -->
     <header class="site-header fixed top-0 left-0 w-full z-50 py-4 px-6 lg:px-8">
-        <div class="flex justify-between items-center">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="#" class="logo-link text-2xl font-bold font-orbitron text-white hover:text-cyan-400 transition-colors flex items-center gap-3">
-                <svg class="mascot" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="mascot w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
                     <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
                     <path d="M12 11V12" stroke="white" stroke-width="2" stroke-linecap="round"/>
                 </svg>
-                <span>cymonic<span class="text-cyan-400 dot">.</span>ai</span>
+                <span>cymonic<span class="text-cyan-400 dot">.</span>com</span>
             </a>
-            <nav class="hidden md:flex items-center gap-8">
+            <nav class="hidden md:flex items-center gap-8 font-medium">
                 <a href="#capabilities" class="nav-link text-gray-300 hover:text-white transition-colors">Capabilities</a>
-                <a href="#contact" class="nav-link text-gray-300 hover:text-white transition-colors">Contact</a>
+                <a href="#operating-model" class="nav-link text-gray-300 hover:text-white transition-colors">Operating Model</a>
+                <a href="#contact" class="bg-cyan-500/10 border border-cyan-500/50 text-cyan-400 px-4 py-2 rounded hover:bg-cyan-500 hover:text-white transition-all">Contact Us</a>
             </nav>
+            <button id="mobile-menu-btn" class="md:hidden text-white p-2 focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
         </div>
     </header>
 
+    <!-- Mobile Nav -->
+    <div id="mobile-menu" class="mobile-menu fixed inset-0 bg-gray-900/95 z-40 flex items-center justify-center md:hidden">
+        <button id="close-menu-btn" class="absolute top-6 right-6 text-white p-2">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <nav class="flex flex-col items-center gap-8 text-xl font-orbitron">
+            <a href="#capabilities" class="mobile-link text-white hover:text-cyan-400">Capabilities</a>
+            <a href="#operating-model" class="mobile-link text-white hover:text-cyan-400">Operating Model</a>
+            <a href="#contact" class="mobile-link text-cyan-400 border border-cyan-400 px-6 py-2 rounded hover:bg-cyan-400 hover:text-black">Contact</a>
+        </nav>
+    </div>
+
     <!-- Hero Section -->
-    <div class="hero-bg min-h-screen flex items-center justify-center text-center p-6">
+    <div class="hero-bg min-h-screen flex items-center justify-center text-center p-6 relative">
         <canvas id="hero-canvas"></canvas>
-        <div class="content-overlay">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-5xl md:text-7xl font-bold font-orbitron text-white mb-4 animate-fade-in-up">
-                    Architecting Intelligence.
-                    <br class="hidden md:block">
-                    <span class="text-cyan-400">Engineering Reality.</span>
-                </h1>
-                <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-8 animate-fade-in-up" style="animation-delay: 0.2s;">
-                    With a foundation of decades in enterprise engineering, we don't just envision the future—we build it. We are the bridge between ambition and executed reality.
-                </p>
-                <a href="#contact" class="cta-button inline-block bg-cyan-500 text-gray-900 font-bold py-3 px-8 rounded-lg text-lg hover:bg-cyan-400" style="animation-delay: 0.4s;">
+        <div class="content-overlay max-w-5xl mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold font-orbitron text-white mb-6 leading-tight animate-on-scroll">
+                Architecting Intelligence.
+                <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500">Engineering Reality.</span>
+            </h1>
+            <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-10 animate-on-scroll" style="transition-delay: 200ms;">
+                We bridge the gap between executive ambition and technical execution. We build the "Level 5" ecosystems that turn intelligent strategy into deployed, autonomous reality.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-on-scroll" style="transition-delay: 400ms;">
+                <a href="#contact" class="bg-cyan-500 text-gray-900 font-bold py-4 px-8 rounded-lg text-lg hover:bg-cyan-400 hover:scale-105 transition-all shadow-[0_0_20px_rgba(34,211,238,0.4)]">
                     Discuss Your Challenge
+                </a>
+                <a href="#operating-model" class="border border-gray-600 text-white font-bold py-4 px-8 rounded-lg text-lg hover:border-cyan-400 hover:text-cyan-400 transition-all">
+                    View Operating Model
                 </a>
             </div>
         </div>
     </div>
 
     <main>
-        <!-- Pillars/Capabilities Section -->
-        <section id="capabilities" class="py-20 md:py-32 bg-gray-900/50">
-            <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
-                <h2 class="section-title text-4xl md:text-5xl font-bold font-orbitron text-white mb-4">Core Capabilities</h2>
-                <p class="section-subtitle max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-16">We transform ambitious ideas into intelligent, scalable realities across the full technology spectrum.</p>
+        <!-- Capabilities Section -->
+        <section id="capabilities" class="py-20 md:py-32 bg-gray-900">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="text-3xl md:text-5xl font-bold font-orbitron text-white mb-4 animate-on-scroll">Core Capabilities</h2>
+                    <p class="text-xl text-gray-400 max-w-3xl mx-auto animate-on-scroll">Transforming ambition into engineering reality across 6 strategic pillars.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="capabilities-grid">
+                    <!-- Capabilities Injected by JS -->
+                </div>
+            </div>
+        </section>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Pillar 1: AI First App Innovation -->
-                    <div class="pillar-card rounded-xl p-8 text-left">
-                        <div class="mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M12 8V4H8"/><rect x="4" y="8" width="8" height="12" rx="2"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M17 12h-2"/><path d="M16 4.5a4 4 0 1 1-8 0"/></svg>
+        <!-- Operating Model Section -->
+        <section id="operating-model" class="py-20 bg-[#0f1522] relative border-t border-gray-800">
+            <div class="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 lg:px-8 relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-5xl font-bold font-orbitron text-white mb-4 animate-on-scroll">Engineering Operating Model</h2>
+                    <p class="text-xl text-gray-400 max-w-3xl mx-auto animate-on-scroll">The <span class="text-cyan-400">Strategy-to-Execution</span> Matrix.</p>
+                </div>
+                
+                <!-- Filter Controls -->
+                <div class="flex flex-wrap justify-center gap-3 mb-20 animate-on-scroll relative z-20" id="filters-container">
+                    <!-- Filters Injected by JS -->
+                </div>
+
+                <!-- MATRIX LAYOUT CONTAINER -->
+                <div class="flex flex-col gap-12">
+
+                    <!-- ROW 1: VISION  -->
+                    <div class="grid grid-cols-1 lg:grid-cols-[120px_1fr] gap-6 animate-on-scroll">
+                        <div class="hidden lg:flex flex-col justify-center items-center border-l-4 border-orange-500 bg-slate-900/50 rounded-r-lg py-4 op-module" id="strategy-label">
+                            <span class="writing-vertical-lr transform rotate-180 text-orange-500 font-orbitron font-bold tracking-widest uppercase whitespace-nowrap">VISION</span>
+                            <span class="text-gray-500 text-xs mt-2 font-mono">STRATEGIC CORE</span>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">AI-First App Innovation</h3>
-                        <p class="text-gray-400">We don't just add AI; we build from the ground up with intelligence at the core. We architect applications where smart algorithms drive fundamental user value and create unparalleled competitive advantages.</p>
+                        <div class="lg:hidden flex items-center gap-3 border-l-4 border-orange-500 pl-3">
+                            <h3 class="text-orange-500 font-orbitron font-bold text-xl">VISION</h3>
+                        </div>
+                        <div class="bg-slate-900/40 border border-slate-700/50 rounded-xl p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="strategy-grid">
+                                <!-- Strategy Cards Injected by JS -->
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Pillar 2: Cloud Transformation -->
-                    <div class="pillar-card rounded-xl p-8 text-left">
-                        <div class="mb-4">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                    <!-- ROW 2: ARCHITECTURE -->
+                    <div class="grid grid-cols-1 lg:grid-cols-[120px_1fr] gap-6 animate-on-scroll">
+                        <div class="hidden lg:flex flex-col justify-center items-center border-l-4 border-blue-500 bg-slate-900/50 rounded-r-lg py-4 op-module" id="blueprint-label">
+                            <span class="writing-vertical-lr transform rotate-180 text-blue-500 font-orbitron font-bold tracking-widest uppercase whitespace-nowrap">ARCHITECTURE</span>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">Cloud Transformation</h3>
-                        <p class="text-gray-400">Beyond migration, we engineer true cloud-native ecosystems. We design for resilience, scalability, and cost-efficiency, leveraging the full power of serverless, containers, and infrastructure-as-code.</p>
+                        <div class="lg:hidden flex items-center gap-3 border-l-4 border-blue-500 pl-3">
+                            <h3 class="text-blue-500 font-orbitron font-bold text-xl">ARCHITECTURE</h3>
+                        </div>
+                        <div class="bg-slate-900/40 border border-slate-700/50 rounded-xl p-6 flex items-center justify-center relative overflow-hidden group op-module blueprint-card" id="blueprint-card">
+                            <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
+                            <div class="text-center relative z-10">
+                                <h4 class="text-white font-bold font-orbitron text-lg tracking-wide">PRINCIPAL DESIGN AUTHORITY</h4>
+                                <p class="text-gray-400 mt-2 text-sm">Chief Architects | Solution Leads | Principal Engineers</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Pillar 3: Data Engineering -->
-                    <div class="pillar-card rounded-xl p-8 text-left">
-                        <div class="mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                    <!-- ROW 3: REALITY  -->
+                    <div class="grid grid-cols-1 lg:grid-cols-[120px_1fr] gap-6 animate-on-scroll">
+                        <div class="hidden lg:flex flex-col justify-center items-center border-l-4 border-cyan-500 bg-slate-900/50 rounded-r-lg py-4 op-module" id="execution-label">
+                            <span class="writing-vertical-lr transform rotate-180 text-cyan-500 font-orbitron font-bold tracking-widest uppercase whitespace-nowrap">REALITY</span>
+                            <span class="text-gray-500 text-xs mt-2 font-mono">ENGINEERING SCALE</span>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">Data Engineering</h3>
-                        <p class="text-gray-400">We architect and build high-throughput data pipelines that are not just robust, but intelligent. From real-time streaming to complex ETL, we turn raw data into a strategic asset ready for advanced analytics and AI.</p>
-                    </div>
+                        <div class="lg:hidden flex items-center gap-3 border-l-4 border-cyan-500 pl-3">
+                            <h3 class="text-cyan-500 font-orbitron font-bold text-xl">REALITY</h3>
+                        </div>
 
-                    <!-- Pillar 4: GenAI -->
-                    <div class="pillar-card rounded-xl p-8 text-left">
-                        <div class="mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M12 2L12 22"/><path d="M22 12L2 12"/><path d="M18.36 18.36L5.64 5.64"/><path d="M18.36 5.64L5.64 18.36"/></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">Generative AI</h3>
-                        <p class="text-gray-400">We harness the power of Large Language Models and diffusion techniques to build systems that create, reason, and augment human capability, moving beyond simple automation to genuine digital collaboration.</p>
-                    </div>
+                        <div class="bg-slate-900/40 border border-slate-700/50 rounded-xl p-6">
+                            <div class="text-center mb-8">
+                                <h4 class="text-cyan-400 font-bold font-orbitron tracking-widest text-sm uppercase">Specialized Engineering Guilds</h4>
+                            </div>
+                            
+                            <!-- Periodic Grid Container -->
+                            <div class="periodic-grid mb-12" id="engineering-grid">
+                                <!-- Engineering Cards Injected by JS -->
+                            </div>
 
-                    <!-- Pillar 5: UX/Product Design -->
-                    <div class="pillar-card rounded-xl p-8 text-left">
-                        <div class="mb-4">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+                            <!-- Support Dock -->
+                            <div class="mt-12 pt-10 border-t border-slate-800 relative">
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 w-px h-8 bg-gradient-to-b from-cyan-900/0 via-cyan-900 to-slate-800"></div>
+                                <div class="flex items-center justify-center gap-3 mb-8">
+                                    <div class="h-px w-12 bg-slate-800"></div>
+                                    <h4 class="text-slate-500 text-xs font-orbitron tracking-[0.2em] uppercase">Growth & Enablement Layer</h4>
+                                    <div class="h-px w-12 bg-slate-800"></div>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="support-grid">
+                                    <!-- Support Cards Injected by JS -->
+                                </div>
+                            </div>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">UX/Product Design</h3>
-                        <p class="text-gray-400">We design experiences for tomorrow's user. Our process fuses data-driven insights with intuitive design principles to create products that are not only powerful but also elegant, accessible, and a pleasure to use.</p>
-                    </div>
-
-                    <!-- Pillar 6: IoT & Edge Computing -->
-                    <div class="pillar-card rounded-xl p-8 text-left">
-                         <div class="mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M2 12h2"/><path d="M20 12h2"/><path d="M5 7.5 2 6"/><path d="m19 7.5 3-1.5"/><path d="M5 16.5 2 18"/><path d="m19 16.5 3 1.5"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m7.5 5-1.5-3"/><path d="m16.5 5 1.5-3"/><path d="m7.5 19-1.5 3"/><path d="m16.5 19 1.5 3"/><circle cx="12" cy="12" r="4"/></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">IoT & Edge Computing</h3>
-                        <p class="text-gray-400">We extend intelligence to the physical world. We build resilient IoT networks and deploy powerful AI models at the edge, enabling autonomous decision-making and real-time insights where they matter most.</p>
                     </div>
                 </div>
             </div>
         </section>
         
         <!-- Contact Section -->
-        <section id="contact" class="py-20 md:py-32 bg-gray-900/50">
+        <section id="contact" class="py-20 bg-slate-900">
             <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-                 <h2 class="section-title text-4xl md:text-5xl font-bold font-orbitron text-white mb-4">Let's Build Together</h2>
-                <p class="contact-text section-subtitle max-w-2xl mx-auto text-lg md:text-xl text-gray-300 mb-16">Complex challenges demand more than solutions—they require architectural foresight. Connect directly with the minds engineering tomorrow's systems and let's map out your next technological leap.</p>
-
-                <div class="group">
-                     <a href="mailto:contact@cymonic.ai" class="inline-block text-3xl md:text-4xl font-bold text-white hover:text-cyan-300 transition-colors duration-300 ease-in-out">
+                 <h2 class="text-3xl md:text-4xl font-bold font-orbitron text-white mb-4 animate-on-scroll">Let's Build Together</h2>
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 inline-block animate-on-scroll mt-12">
+                     <a href="mailto:contact@cymonic.com" class="text-2xl md:text-4xl font-bold text-white hover:text-cyan-400 transition-colors">
                         contact@cymonic.com
                     </a>
-                    <div class="mt-3 h-0.5 w-1/4 mx-auto bg-gray-700 group-hover:bg-cyan-400 group-hover:w-1/2 transition-all duration-500 ease-in-out"></div>
+                    <div class="mt-4 text-gray-400">Schedule your Architectural Assessment</div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-gray-900 py-6">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center text-gray-500">
-            <p>&copy; 2025 cymonic.ai - All Rights Reserved.</p>
+    <footer class="bg-black py-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center text-gray-600">
+            <p class="mb-2">&copy; 2025 cymonic.com - Architecting Intelligence.</p>
         </div>
     </footer>
 
+    <!-- JavaScript Logic -->
     <script>
-        // Animated background script
-        const canvas = document.getElementById('hero-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let canvasWidth = canvas.width = window.innerWidth;
-        let canvasHeight = canvas.height = window.innerHeight;
-        const mouse = { x: undefined, y: undefined };
+        // --- DATA CONFIGURATION ---
+        const config = {
+            filters: [
+                { id: 'all', label: 'All Teams' },
+                { id: 'ai', label: 'AI-First Innovation' },
+                { id: 'cloud', label: 'Cloud Transformation' },
+                { id: 'data', label: 'Data Engineering' },
+                { id: 'genai', label: 'GenAI & Agents' },
+                { id: 'ux', label: 'Mobility & UX' },
+                { id: 'iot', label: 'IoT & Edge' }
+            ],
+            capabilities: [
+                { iconPath: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', title: 'AI-First Innovation', desc: 'Probabilistic models driving logic.', bullets: ['Continuous Training (CT)', 'Adaptive Journeys'] },
+                { iconPath: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', title: 'Cloud Transformation', desc: 'From Lift & Shift to Serverless.', bullets: ['Scale-to-Zero', 'GitOps & Chaos Eng'] },
+                { iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4', title: 'Data Engineering', desc: 'Strategic assets via Data Mesh.', bullets: ['Event-Streaming Mesh', 'PII Masking'] },
+                { iconPath: 'M13 10V3L4 14h7v7l9-11h-7z', title: 'GenAI & Agents', desc: 'Reasoning agents for complex workflows.', bullets: ['Agentic Workflows', 'Cognitive Arch'] },
+                { iconPath: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z', title: 'Mobility & UX', desc: 'Predictive interfaces anticipating needs.', bullets: ['Generative UI', 'Predictive UX'] },
+                { iconPath: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z', title: 'IoT & Edge', desc: 'Swarm intelligence on-device.', bullets: ['Edge AI Training', 'Swarm Intel'] }
+            ],
+            strategy: [
+                { id: 'strat-1', title: 'OFFICE OF STRATEGY', desc: 'Enterprise Standards, Governance & Vision' },
+                { id: 'strat-2', title: 'PLATFORM CONVERGENCE', desc: 'Unified Cloud & Data Foundation Engineering' },
+                { id: 'strat-3', title: 'APPLIED INTELLIGENCE', desc: 'AI R&D, Model Governance & Roadmap' }
+            ],
+            engineering: [
+                { num: '01', sym: 'Cd', name: 'Cloud & Data Ops', stack: 'AWS, Azure, GCP, K8s, Terraform, Kafka', cats: 'cloud data iot', parent: 'strat-2' },
+                { num: '02', sym: 'Jv', name: 'Enterprise Java', stack: 'Spring Boot, Microservices, Jakarta EE', cats: 'cloud ai', parent: 'strat-2' },
+                { num: '03', sym: 'Ai', name: 'AI & Innovation', stack: 'Python, PyTorch, LLMs, RAG, LangChain', cats: 'ai genai', parent: 'strat-3' },
+                { num: '04', sym: 'Js', name: 'Full Stack JS', stack: 'React, Angular, Node.js, TypeScript, Next', cats: 'ux mobility', parent: 'strat-1' },
+                { num: '05', sym: 'Mo', name: 'Mobility', stack: 'iOS/Swift, Android/Kotlin, Flutter', cats: 'mobility ux iot', parent: 'strat-1' },
+                { num: '06', sym: 'Nt', name: 'Enterprise .NET', stack: '.NET Core, Azure Func, C#, Blazor', cats: 'cloud', parent: 'strat-2' },
+                { num: '07', sym: 'In', name: 'Integration', stack: 'MuleSoft, Apigee, GraphQL, REST', cats: 'data cloud', parent: 'strat-2' },
+                { num: '08', sym: 'Pe', name: 'Product Eng', stack: 'Agile, DevOps, CI/CD (Jenkins/GitLab)', cats: 'ai cloud data genai ux iot', parent: 'strat-1' },
+                { num: '09', sym: 'Xr', name: 'Immersive XR', stack: 'Unity, Unreal, WebXR, AR/VR', cats: 'ux mobility', parent: 'strat-3' },
+                { num: '10', sym: 'Sf', name: 'Salesforce', stack: 'Sales Cloud, Apex, LWC', cats: 'cloud data', parent: 'strat-2' },
+                { num: '11', sym: 'Ra', name: 'Rapid App Dev', stack: 'OutSystems, Mendix, Low-Code', cats: 'ux cloud', parent: 'strat-1' },
+                { num: '12', sym: 'Qe', name: 'Quality Assurance', stack: 'Selenium, Cypress, Chaos Eng', cats: 'cloud ai', parent: 'strat-1' }
+            ],
+            support: [
+                { iconPath: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01', title: 'Program Mgmt', desc: 'Agile Delivery' },
+                { iconPath: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z', title: 'Solution Eng', desc: 'Tech Pre-Sales' },
+                { iconPath: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6', title: 'Growth Strategy', desc: 'Market Align' },
+                { iconPath: 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', title: 'Vertical Experts', desc: 'SMEs' },
+                { iconPath: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', title: 'People & Culture', desc: 'Talent & HR' },
+                { iconPath: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', title: 'Operations', desc: 'Shared Svcs' }
+            ]
+        };
 
-        window.addEventListener('mousemove', (event) => {
-            mouse.x = event.x;
-            mouse.y = event.y;
-        });
-        
-        window.addEventListener('mouseout', () => {
-            mouse.x = undefined;
-            mouse.y = undefined;
-        });
-
-        function Particle(x, y) {
-            this.x = x || Math.random() * canvasWidth;
-            this.y = y || Math.random() * canvasHeight;
-            this.vx = (Math.random() - 0.5) * 0.5;
-            this.vy = (Math.random() - 0.5) * 0.5;
-            this.radius = Math.random() * 1.5 + 0.5;
-        }
-
-        function createParticles() {
-            particles = [];
-            let particleCount = Math.floor(canvasWidth * canvasHeight / 15000);
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        // --- GLOBAL FUNCTIONS (Window Attached) ---
+        window.highlightPath = function(strategyId, element) {
+            const stratCard = document.getElementById(strategyId);
+            if(stratCard) stratCard.classList.add('path-active');
             
-            particles.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.fill();
-                
-                p.x += p.vx;
-                p.y += p.vy;
+            const blueprint = document.getElementById('blueprint-card');
+            if(blueprint) blueprint.classList.add('path-active');
+            
+            document.getElementById('strategy-label').classList.add('path-active');
+            document.getElementById('blueprint-label').classList.add('path-active');
+            document.getElementById('execution-label').classList.add('path-active');
+        };
 
-                if (p.x < 0 || p.x > canvasWidth) p.vx *= -1;
-                if (p.y < 0 || p.y > canvasHeight) p.vy *= -1;
-            });
+        window.clearPath = function(strategyId, element) {
+            const stratCard = document.getElementById(strategyId);
+            if(stratCard) stratCard.classList.remove('path-active');
 
-            drawLines();
-            requestAnimationFrame(draw);
+            const blueprint = document.getElementById('blueprint-card');
+            if(blueprint) blueprint.classList.remove('path-active');
+
+            document.getElementById('strategy-label').classList.remove('path-active');
+            document.getElementById('blueprint-label').classList.remove('path-active');
+            document.getElementById('execution-label').classList.remove('path-active');
+        };
+
+        // --- RENDERING & INIT ---
+        function renderEverything() {
+            // 1. Render Filters
+            const filterContainer = document.getElementById('filters-container');
+            filterContainer.innerHTML = config.filters.map((f, i) => 
+                `<button class="filter-btn ${i===0?'active':''} px-5 py-2 rounded-full border border-cyan-500/30 text-sm font-semibold text-white hover:border-cyan-400" data-filter="${f.id}">${f.label}</button>`
+            ).join('');
+
+            // 2. Render Capabilities
+            const capContainer = document.getElementById('capabilities-grid');
+            capContainer.innerHTML = config.capabilities.map(c => `
+                <div class="bg-slate-800/50 border border-slate-700 p-8 rounded-xl hover:border-cyan-500/50 hover:bg-slate-800 transition-all group animate-on-scroll">
+                    <div class="w-12 h-12 bg-cyan-900/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${c.iconPath}"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 font-orbitron">${c.title}</h3>
+                    <p class="text-gray-400 text-sm mb-4">${c.desc}</p>
+                    <ul class="text-cyan-400 text-xs space-y-1">${c.bullets.map(b => `<li>• ${b}</li>`).join('')}</ul>
+                </div>
+            `).join('');
+
+            // 3. Render Strategy (Layer 1)
+            const stratContainer = document.getElementById('strategy-grid');
+            stratContainer.innerHTML = config.strategy.map(s => `
+                <div class="bg-slate-800/80 border border-slate-700 p-5 rounded-lg text-center hover:border-orange-500/50 transition-colors op-module strategy-card" id="${s.id}">
+                    <h4 class="text-white font-bold mb-2 font-orbitron">${s.title}</h4>
+                    <p class="text-xs text-gray-400">${s.desc}</p>
+                </div>
+            `).join('');
+
+            // 4. Render Engineering (Layer 3)
+            const engContainer = document.getElementById('engineering-grid');
+            engContainer.innerHTML = config.engineering.map(e => `
+                <div class="element-card group" data-categories="${e.cats}" data-parent="${e.parent}" onmouseenter="highlightPath('${e.parent}', this)" onmouseleave="clearPath('${e.parent}', this)">
+                    <div class="connection-beam"></div>
+                    <div class="atomic-number">${e.num}</div>
+                    <div class="element-symbol">${e.sym}</div>
+                    <div class="element-name">${e.name}</div>
+                    <div class="tech-overlay">
+                        <h5 class="text-cyan-400 font-bold text-xs mb-1">STACK</h5>
+                        <p class="text-xs text-gray-300 leading-snug">${e.stack}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // 5. Render Support (Layer 4)
+            const suppContainer = document.getElementById('support-grid');
+            suppContainer.innerHTML = config.support.map(s => `
+                <div class="group relative bg-slate-900/80 border border-slate-800 p-4 rounded-lg hover:border-indigo-500/50 transition-all duration-300 flex flex-col items-center gap-3 text-center op-module">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500/0 group-hover:bg-indigo-500 transition-colors"></div>
+                    <div class="p-2 rounded-md bg-slate-800 group-hover:bg-indigo-500/10 group-hover:text-indigo-400 text-slate-400 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="${s.iconPath}"></path></svg>
+                    </div>
+                    <div>
+                        <h5 class="text-gray-200 font-bold text-xs font-orbitron mb-1 group-hover:text-indigo-300">${s.title}</h5>
+                        <p class="text-[10px] text-gray-500 leading-tight">${s.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            initInteractions();
         }
 
-        function drawLines() {
-            const connectRadius = 120;
-            const mouseRadius = 150;
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    let p1 = particles[i];
-                    let p2 = particles[j];
-                    let dist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        function initInteractions() {
+            // Filter Logic with Event Delegation (Robust Fix)
+            const filterContainer = document.getElementById('filters-container');
+            const elementCards = document.querySelectorAll('.element-card');
 
-                    if (dist < connectRadius) {
-                        let opacity = 1 - dist / connectRadius;
+            if (filterContainer && elementCards.length > 0) {
+                filterContainer.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.filter-btn');
+                    if (!btn) return;
 
-                        // Spotlight effect
-                        if (mouse.x && mouse.y) {
-                            let distToMouse = Math.sqrt(Math.pow((p1.x + p2.x) / 2 - mouse.x, 2) + Math.pow((p1.y + p2.y) / 2 - mouse.y, 2));
-                            if (distToMouse < mouseRadius) {
-                                opacity += (1 - distToMouse / mouseRadius) * 0.7;
-                            }
+                    // Toggle Active Class
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Filter Logic
+                    const filterValue = btn.getAttribute('data-filter');
+                    elementCards.forEach(card => {
+                        const categories = card.getAttribute('data-categories') ? card.getAttribute('data-categories').split(' ') : [];
+                        if (filterValue === 'all' || categories.includes(filterValue)) {
+                            card.classList.remove('dimmed');
+                        } else {
+                            card.classList.add('dimmed');
                         }
-
-                        ctx.strokeStyle = `rgba(56, 189, 248, ${opacity > 1 ? 1 : opacity})`;
-                        ctx.lineWidth = 0.7;
-                        ctx.beginPath();
-                        ctx.moveTo(p1.x, p1.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
-                }
+                    });
+                });
             }
+
+            // Scroll Animation Observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = `fade-in-up 0.8s ease-out forwards`;
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
         }
 
-        window.addEventListener('resize', () => {
-            canvasWidth = canvas.width = window.innerWidth;
-            canvasHeight = canvas.height = window.innerHeight;
-            createParticles();
-        });
+        // --- BOOTSTRAP ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderEverything();
+            
+            // Hero Particles
+            const canvas = document.getElementById('hero-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
 
-        createParticles();
-        draw();
+            window.addEventListener('resize', () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; initParticles(); });
 
-        // Scroll animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animation = `fade-in-up 0.8s ease-out forwards`;
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.section-title, .section-subtitle, .pillar-card, .contact-text').forEach((el, index) => {
-            el.style.animationDelay = `${index * 0.1}s`;
-            observer.observe(el);
-        });
-        
-        // Header scroll effect
-        const header = document.querySelector('.site-header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+            function initParticles() {
+                particles = Array.from({length: Math.floor(w * h / 12000)}, () => ({
+                    x: Math.random() * w, y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+                    r: Math.random() * 1.5 + 0.5
+                }));
             }
-        });
 
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
+                
+                particles.forEach((p, i) => {
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0 || p.x > w) p.vx *= -1;
+                    if (p.y < 0 || p.y > h) p.vy *= -1;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+                    
+                    for (let j = i + 1; j < particles.length; j++) {
+                        let p2 = particles[j];
+                        let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                        if (dist < 100) {
+                            ctx.lineWidth = 1 - (dist / 100);
+                            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+                        }
+                    }
+                });
+                requestAnimationFrame(animate);
+            }
+            initParticles(); animate();
+            
+            // Header Scroll
+            const header = document.querySelector('.site-header');
+            window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 50));
+
+            // Mobile Menu
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const closeBtn = document.getElementById('close-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            const toggleMenu = () => { menu.classList.toggle('open'); document.body.classList.toggle('overflow-hidden'); };
+            [menuBtn, closeBtn, ...document.querySelectorAll('.mobile-link')].forEach(el => el?.addEventListener('click', toggleMenu));
+        });
     </script>
 </body>
 </html>
-
