@@ -181,6 +181,16 @@
         .animate-on-scroll { opacity: 0; }
         .filter-btn.active { background-color: #22d3ee; color: #0f172a; box-shadow: 0 0 15px rgba(34, 211, 238, 0.5); }
 
+        /* Vertical Text Fix for Pillars */
+        .writing-vertical-lr {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            max-height: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         /* Media Queries */
         @media (min-width: 1025px) {
             .element-card:hover .tech-overlay { opacity: 1; transform: translateY(0); }
@@ -432,8 +442,8 @@
                     <div class="element-symbol">${e.sym}</div>
                     <div class="element-name">${e.name}</div>
                     <div class="tech-overlay">
-                        <h5 class="text-cyan-400 font-bold text-xs mb-1">STACK</h5>
-                        <p class="text-xs text-gray-300 leading-snug">${e.stack}</p>
+                        <h5 class="text-cyan-400 font-bold text-xs mb-1">${e.name}</h5>
+                        <p class="text-xs text-gray-300 leading-snug">Engineering Practice</p>
                     </div>
                     <div class="element-ten-tech">
                         <h5 class="text-cyan-400 font-bold text-xs mb-2">${e.name}</h5>
