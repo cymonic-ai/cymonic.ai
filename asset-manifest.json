@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "./static/css/main.36facd2f.css",
+    "main.js": "./static/js/main.98842702.js",
+    "static/media/world-outline.svg": "./static/media/world-outline.b941b04825a584a48cdc28f5a237be14.svg",
+    "index.html": "./index.html",
+    "main.36facd2f.css.map": "./static/css/main.36facd2f.css.map",
+    "main.98842702.js.map": "./static/js/main.98842702.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.36facd2f.css",
+    "static/js/main.98842702.js"
+  ]
+}
